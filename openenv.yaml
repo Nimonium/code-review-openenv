@@ -1,0 +1,24 @@
+name: code_review_env
+version: "1.0.0"
+description: >
+  A real-world code review environment where AI agents identify bugs,
+  security vulnerabilities, and style problems in Python code.
+  Three tasks ranging from simple logic bugs (subtraction instead of addition)
+  to advanced security flaws (shell injection and pickle deserialization).
+tags:
+  - code-review
+  - security
+  - real-world
+  - python
+  - debugging
+hardware: cpu-basic
+tasks:
+  - id: task_easy
+    difficulty: easy
+    description: "Identify a basic subtraction sign error in an addition function."
+  - id: task_medium
+    difficulty: medium
+    description: "Detect command injection in a shell-format function using cat."
+  - id: task_hard
+    difficulty: hard
+    description: "Identify insecure pickle deserialization leading to possible RCE."
