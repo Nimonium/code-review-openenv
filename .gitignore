@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+.env
+.ipynb_checkpoints
+validate_log*.txt
+validate_log.json
+test_connection.py
+baseline_mock.py
+.DS_Store
