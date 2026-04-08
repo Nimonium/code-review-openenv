@@ -14,6 +14,10 @@ app = create_fastapi_app(
     observation_cls=CodeReviewObservation
 )
 
+@app.get("/")
+def root():
+    return {"status": "ok", "message": "CodeReviewEnv is running"}
+
 last_score = {"score": 0.0}
 
 @app.get("/tasks")

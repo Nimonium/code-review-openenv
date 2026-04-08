@@ -16,9 +16,10 @@ COPY . .
 # Permissions for Hugging Face Spaces (user 1000)
 RUN chmod -R 777 /app
 
-# HF Spaces uses port 7860 by default
+# HF Spaces uses port 7860 by default, but we should use the PORT env var
 ENV PORT=7860
+ENV PYTHONPATH=/app
 EXPOSE 7860
 
 # Run with standard uvicorn to support websockets (for /ws endpoint)
-CMD ["uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["sh", "-c", "uvicorn server.app:app --host 0.0.0.0 --port ${PORT}"]

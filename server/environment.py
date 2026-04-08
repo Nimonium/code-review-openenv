@@ -13,15 +13,19 @@ class CodeReviewEnvironment(Environment[CodeReviewAction, CodeReviewObservation,
         self.current_state = None
         self.is_done = True
         
-    def reset(self, seed: Optional[int] = None, episode_id: Optional[str] = None, task_id: str = None, **kwargs: Any) -> CodeReviewObservation:
-        self._reset_rubric()
+    def reset(self, *, seed: Optional[int] = None, task_id: Optional[str] = None, **kwargs) -> CodeReviewObservation:
+        # Standard OpenEnv reset call
+        if hasattr(self, "_reset_rubric"):
+            self._reset_rubric()
+            
         if task_id and task_id in TASKS:
             task = TASKS[task_id]
         else:
-            task = random.choice(list(TASKS.values()))
+            # Default or random task
+            task = TASKS.get(task_id) or random.choice(list(TASKS.values()))
             
         self.current_state = CodeReviewState(
-            episode_id=episode_id or "default",
+            episode_id=kwargs.get("episode_id", "default"),
             step_count=0,
             **task
         )
@@ -29,9 +33,12 @@ class CodeReviewEnvironment(Environment[CodeReviewAction, CodeReviewObservation,
         
         obs = CodeReviewObservation(
             code_snippet=self.current_state.code_snippet,
-            task_id=self.current_state.task_id
+            task_id=self.current_state.task_id,
+            done=False,
+            reward=0.0,
+            metadata={}
         )
-        return self._apply_transform(obs)
+        return obs
 
     def step(self, action: CodeReviewAction, timeout_s: Optional[float] = None, **kwargs: Any) -> CodeReviewObservation:
         if self.is_done:
@@ -45,9 +52,10 @@ class CodeReviewEnvironment(Environment[CodeReviewAction, CodeReviewObservation,
             code_snippet=self.current_state.code_snippet,
             task_id=self.current_state.task_id,
             done=True,
-            reward=score
+            reward=score,
+            metadata={}
         )
-        return self._apply_transform(obs)
+        return obs
         
     @property
     def state(self) -> CodeReviewState:
